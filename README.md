@@ -6,4 +6,3 @@
 2. cd ProtoReader
 3. npm install
 4. expo start
-5. 
