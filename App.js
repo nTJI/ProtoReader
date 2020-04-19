@@ -3,7 +3,8 @@ import Header from './src/Header.js';
 import Footer from './src/Footer.js';
 import Content from './src/Content.js';
 import {StyleSheet, View} from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+import * as ImagePicker from 'react-native-image-picker';
+
 
 class App extends React.Component {
     render() {
@@ -29,8 +30,6 @@ const styles = StyleSheet.create({
     uploadAvatsar: {
         flex: 1,
         backgroundColor: '#ff5e44',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
 });
 
@@ -43,6 +42,7 @@ const options = {
     },
 };
 
+
 ImagePicker.showImagePicker(options, (response) => {
     console.log('Response = ', response);
 
@@ -53,6 +53,7 @@ ImagePicker.showImagePicker(options, (response) => {
     } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
     } else {
+
         const source = {uri: response.uri};
 
         // You can also display the image using data:
