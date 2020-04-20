@@ -1,68 +1,51 @@
 import React from 'react';
-import Header from './src/Header.js';
-import Footer from './src/Footer.js';
-import Content from './src/Content.js';
-import {StyleSheet, View} from 'react-native';
-import * as ImagePicker from 'react-native-image-picker';
+import ImagePicker from './src/ImagePicker.js';
+import {View} from 'react-native';
 
+export default class App extends React.Component {
+    state = {
+        image: null,
+    };
 
-class App extends React.Component {
     render() {
+
         return (
-            <View style={styles.container}>
-                <Header/>
-                <Content/>
-                <Image source={this.state.avatarSource} style={styles.uploadAvatsar}/>
-                <Footer/>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ImagePicker/>
             </View>
         );
     }
 
+    componentDidMount() {
+        this.getPermissionAsync();
+    }
+
+    getPermissionAsync = async () => {
+        if (Constants.platform.ios) {
+
+            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
+            }
+        }
+    };
+
+    _pickImage = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+            if (!result.cancelled) {
+                this.setState({image: result.uri});
+            }
+
+            console.log(result);
+        } catch (E) {
+            console.log(E);
+        }
+    };
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    uploadAvatsar: {
-        flex: 1,
-        backgroundColor: '#ff5e44',
-    },
-});
-
-const options = {
-    title: 'Select Avatar',
-    customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
-    storageOptions: {
-        skipBackup: true,
-        path: 'images',
-    },
-};
-
-
-ImagePicker.showImagePicker(options, (response) => {
-    console.log('Response = ', response);
-
-    if (response.didCancel) {
-        console.log('User cancelled image picker');
-    } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-    } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-    } else {
-
-        const source = {uri: response.uri};
-
-        // You can also display the image using data:
-        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-        this.setState({
-            avatarSource: source,
-        });
-    }
-});
-
-export default App;
