@@ -9,7 +9,8 @@ npm-debug.*
 *.orig.*
 web-build/
 web-report/
-.idea/
+.idea
+*.iml
 
 # macOS
 .DS_Store
